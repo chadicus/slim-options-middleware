@@ -87,7 +87,7 @@ final class OptionsMiddlewareTest extends TestCase implements RequestMethodInter
                     implode(',', self::ALLOW_HEADERS),
                 ],
                 'Access-Control-Allow-Methods' => [
-                    implode(',', $methods),
+                    implode(',', [self::METHOD_GET, self::METHOD_POST, self::METHOD_OPTIONS]),
                 ],
             ],
             $response->getHeaders()
