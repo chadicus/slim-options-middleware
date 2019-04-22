@@ -1,6 +1,6 @@
 # Slim OPTIONS Middleware
 
-Middleware to add an OPTIONS route to all existing routes.
+Middleware to add an OPTIONS route to existing routes.
 
 [![Build Status](https://travis-ci.com/subjective-php/slim-options-middlware.svg?branch=master)](https://travis-ci.com/subjective-php/slim-options-middlware)
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/subjective-php/slim-options-middlware/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/subjective-php/slim-options-middlware/?branch=master)
@@ -39,4 +39,48 @@ composer install
 ./vendor/bin/phpunit
 ./vendor/bin/phpcs
 ```
+## Slim 3 Example
+```php
+require __DIR__ . '/vendor/autoload.php';
+
+use SubjectivePHP\Slim\Middleware;
+
+// This Slim setting is required for the middleware to work
+$app = new Slim\App([
+    "settings"  => [
+        "determineRouteBeforeAppMiddleware" => true,
+    ]
+]);
+
+// create the middlware
+$optionsMiddleware = new Middleware\OptionsMiddleware('*', ['Authorization', 'Content-Type']);
+
+$app->map(['GET', 'POST'], 'foos', function ($request, $response, $args) {
+    return $response;
+};
+
+$app->add($optionsMiddleware);
+
+$app->run();
+```
+
+#### Send an OPTIONS request to the API
+```
+curl -i -X OPTIONS http://example.org/foos
+```
+#### Response will be similar to
+```
+HTTP/1.1 200 OK
+Access-Control-Allow-Headers: Authorization, Content-Type
+Access-Control-Allow-Methods: GET, POST, OPTIONS
+Access-Control-Allow-Origin: *
+Content-Type: text/html; charset=UTF-8
+Date: Mon, 22 Apr 2019 12:45:18 GMT
+Server: Apache/2.4.18 (Ubuntu)
+Content-Length: 0
+Connection: keep-alive
+```
+
+
+
 
